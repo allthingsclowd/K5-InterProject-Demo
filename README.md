@@ -21,6 +21,7 @@ Steps:
 Warning: Ensure to use two 'disposable' projects within your contract and add their names and ids to the above file. 
 Every resource in these projects will get purged so ensure you're not sharing it with other users.
 3. Launch the build_multi_project_demo.py script and relax! All the SSH keys, public ips, etc are returned to the console.
+  By default the script builds 2 VMs per subnet and adds a single floating ip address per poroject. You can configure the number of servers per subnet by adjusting the 'count' parameter within the script.
 4. When finished playing with the routing you can use the purge_project.py to reset everything.
 
 Happy Stacking!
