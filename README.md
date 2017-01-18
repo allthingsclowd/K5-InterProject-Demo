@@ -1,7 +1,8 @@
 # K5-InterProject-Demo
 Fully Automated Shared Service API Deployment on Fujitsu K5
 
-(https://thefluffycloudguy.files.wordpress.com/2017/01/interprojectblog.png?w=1536)
+![image](https://cloud.githubusercontent.com/assets/9472095/22083347/9fd53558-ddc3-11e6-88a7-b3c45a13d96a.png)
+
 
 
 
