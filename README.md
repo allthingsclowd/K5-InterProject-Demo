@@ -3,19 +3,18 @@ Fully Automated Shared Service API Deployment on Fujitsu K5
 
 Target - Fujitsu K5 IaaS Cloud Platform
 
-Author: Graham Land
-Date: 18/1/17
-Twitter: @allthingsclowd
-Github: https://github.com/allthingscloud
+Author: Graham Land<br>
+Date: 18/1/17<br>
+Twitter: @allthingsclowd<br>
+Github: https://github.com/allthingscloud<br>
 Blog: https://allthingscloud.eu
 
 The python scripts in this repository can be used to create the shared services model below auto-magically :)
 
 ![image](https://cloud.githubusercontent.com/assets/9472095/22083347/9fd53558-ddc3-11e6-88a7-b3c45a13d96a.png)
 
-
-
 Steps:
+
 1. Copy all these files to the same directory
 2. Edit the k5contractsettingsv10.py to include your K5 contract details
 Warning: Ensure to use two 'disposable' projects within your contract and add their names and ids to the above file. 
