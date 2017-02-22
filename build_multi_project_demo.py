@@ -116,7 +116,7 @@ def create_k5_infra(k5token, name, opposite_name, cidr, cidr2, project, az, ext_
 
 def create_server(k5token, name, Projectid, net_id, sg_id, ext_net, imageid, flavorid, newkp_name, sg_name, volsize, public, az, region, count):
 
-    name = name + "-svr" + count
+    name = name + "-svr" + str(count)
     # create a port for the server
     port = create_port(k5token, name, net_id, sg_id, az, region).json()['port']
     port_id = port.get('id')
