@@ -1,3 +1,4 @@
+#!/usr/bin/python
 """Summary: This script resets the environment, obliterates the project resources identified in the K5contractsettings.py file
 
 CAUTION : The purge script obliterates everything in those projects, ensure you're happy to loose everything.
