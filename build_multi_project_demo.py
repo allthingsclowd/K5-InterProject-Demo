@@ -145,6 +145,9 @@ def main():
     # Define some standard values, so they're not complicating things later
     ubuntuServer = "ffa17298-537d-40b2-a848-0a4d22b49df5" # This is the image to use
     p1_flavor = "1901" # This is the P-1 "flavor" code to use
+
+    # Define the prefix for the projects
+    projectPrefix = randomword(8)
     
     ProjectAk5token = get_scoped_token(adminUser, adminPassword, contract, demoProjectAid, region).headers['X-Subject-Token']
     print "Project A Scoped Token - ", ProjectAk5token
@@ -159,12 +162,12 @@ def main():
 
     # create infrastructure for Project A and return the two interProject ports
     print "Starting build of Project A..."
-    projectA = create_k5_infra(ProjectAk5token, "ProjA", "ProjB", projectAcidr1, projectAcidr2 ,demoProjectAid, az2, extaz2, ubuntuServer, p1_flavor, "3", 2)
+    projectA = create_k5_infra(ProjectAk5token, projectPrefix + "-ProjA", projectPrefix + "-ProjB", projectAcidr1, projectAcidr2 ,demoProjectAid, az2, extaz2, ubuntuServer, p1_flavor, "3", 2)
     print "\nCreated Project A Infrastructure", projectA
 
     print "\nStarting build of Project B..."
     # create infrastructure for Project B and return the two interProject ports
-    projectB = create_k5_infra(ProjectBk5token, "ProjB", "ProjA", projectBcidr1, projectBcidr2 ,demoProjectBid, az2, extaz2, ubuntuServer, p1_flavor, "3", 2)
+    projectB = create_k5_infra(ProjectBk5token, projectPrefix + "-ProjB", projectPrefix + "-ProjA", projectBcidr1, projectBcidr2 ,demoProjectBid, az2, extaz2, ubuntuServer, p1_flavor, "3", 2)
     print "\nCreated Project B Infrastructure", projectB
 
     print "\nCreating InterProject Connection 1..."
