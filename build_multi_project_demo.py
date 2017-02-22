@@ -159,12 +159,12 @@ def main():
 
     # create infrastructure for Project A and return the two interProject ports
     print "Starting build of Project A..."
-    projectA = create_k5_infra(ProjectAk5token, "ProjA", projectAcidr1, projectAcidr2 ,demoProjectAid, az2, extaz2, ubuntuServer, p1_flavor, "3", 2)
+    projectA = create_k5_infra(ProjectAk5token, "ProjA", "ProjB", projectAcidr1, projectAcidr2 ,demoProjectAid, az2, extaz2, ubuntuServer, p1_flavor, "3", 2)
     print "\nCreated Project A Infrastructure", projectA
 
     print "\nStarting build of Project B..."
     # create infrastructure for Project B and return the two interProject ports
-    projectB = create_k5_infra(ProjectBk5token, "ProjB", projectBcidr1, projectBcidr2 ,demoProjectBid, az2, extaz2, ubuntuServer, p1_flavor, "3", 2)
+    projectB = create_k5_infra(ProjectBk5token, "ProjB", "ProjA", projectBcidr1, projectBcidr2 ,demoProjectBid, az2, extaz2, ubuntuServer, p1_flavor, "3", 2)
     print "\nCreated Project B Infrastructure", projectB
 
     print "\nCreating InterProject Connection 1..."
