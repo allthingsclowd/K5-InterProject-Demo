@@ -6,7 +6,7 @@ Target - Fujitsu K5 IaaS Cloud Platform
 Author: Graham Land<br>
 Date: 18/1/17<br>
 Twitter: @allthingsclowd<br>
-Github: https://github.com/allthingscloud<br>
+Github: https://github.com/allthingsclowd/K5-InterProject-Demo/<br>
 Blog: https://allthingscloud.eu
 
 The python scripts in this repository can be used to create the shared services model below auto-magically :)
