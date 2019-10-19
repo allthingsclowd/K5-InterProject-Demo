@@ -20,9 +20,9 @@ from k5APIwrappersV18 import *
 
 
 
-def create_k5_infra(k5token, name, cidr, cidr2, project, az, ext_net, imageid, flavorid, volsize, count):
+def create_k5_infra(k5token, name, opposite_name, cidr, cidr2, project, az, ext_net, imageid, flavorid, volsize, count):
     # create first network
-    name = name + "-" + randomword(8)
+    name = name + "-net"
     # Create a network
 
     net_id = create_network(k5token, name, az , region).json()['network'].get('id')
@@ -34,7 +34,7 @@ def create_k5_infra(k5token, name, cidr, cidr2, project, az, ext_net, imageid, f
     print "\nFirst Subnet ID ", subnet_id
 
     # create second network
-    net2name = name + "-2"
+    net2name = name + "2"
     # Create a network
 
     net_id2 = create_network(k5token, net2name, az , region).json()['network'].get('id')
@@ -75,13 +75,13 @@ def create_k5_infra(k5token, name, cidr, cidr2, project, az, ext_net, imageid, f
     print "\nSecurity Group Rules Added to Security Group\nSSH\n", ssh.json(), "\nRDP\n", rdp.json(), "\nICMP\n", icmp.json()
 
     # create a port for interproject routing to subnet 1
-    port1 = create_port(k5token, name, net_id, sg_id, az, region).json()['port']
+    port1 = create_port(k5token, opposite_name + "-net-IPL", net_id, sg_id, az, region).json()['port']
     port1_id = port1.get('id')
     port1_ip = port1['fixed_ips'][0].get('ip_address')
     print "\nInterProject Route Port 1 created ", port1
 
-    # create a port for interproject routing to subnet 1
-    port2 = create_port(k5token, name, net_id2, sg_id, az, region).json()['port']
+    # create a port for interproject routing to subnet 2
+    port2 = create_port(k5token, opposite_name + "-net2-IPL", net_id2, sg_id, az, region).json()['port']
     port2_id = port2.get('id')
     port2_ip = port2['fixed_ips'][0].get('ip_address')
     print "\nInterProject Route Port 2 created ", port2
@@ -103,20 +103,20 @@ def create_k5_infra(k5token, name, cidr, cidr2, project, az, ext_net, imageid, f
     public = True
     while count > 0:
         # deploy servers on subnet 1
-        NewServerSub1 = create_server(k5token, name, project, net_id, sg_id, ext_net, imageid, flavorid, newkp_name, sg_name, volsize, public, az, region)
+        NewServerSub1 = create_server(k5token, name, project, net_id, sg_id, ext_net, imageid, flavorid, newkp_name, sg_name, volsize, public, az, region, count)
         public = False
         ServerDetails = ServerDetails + str(count) + ". " + NewServerSub1 + "\n"
         # deploy servers on subnet 2
-        NewServerSub2 = create_server(k5token, name, project, net_id2, sg_id, ext_net, imageid, flavorid, newkp_name, sg_name, volsize, public, az, region)
+        NewServerSub2 = create_server(k5token, net2name, project, net_id2, sg_id, ext_net, imageid, flavorid, newkp_name, sg_name, volsize, public, az, region, count)
         ServerDetails = ServerDetails + str(count) + ". " + NewServerSub2 + "\n"
         count = count - 1
     ServerDetails = ServerDetails + "\n=========\n"
 
     return (ServerDetails, router_id, port1_id, port1_ip, port2_id, port2_ip)
 
-def create_server(k5token, name, Projectid, net_id, sg_id, ext_net, imageid, flavorid, newkp_name, sg_name, volsize, public, az, region):
+def create_server(k5token, name, Projectid, net_id, sg_id, ext_net, imageid, flavorid, newkp_name, sg_name, volsize, public, az, region, count):
 
-    name = name + "-" + randomword(8)
+    name = name + "-svr" + str(count)
     # create a port for the server
     port = create_port(k5token, name, net_id, sg_id, az, region).json()['port']
     port_id = port.get('id')
@@ -142,6 +142,13 @@ def create_server(k5token, name, Projectid, net_id, sg_id, ext_net, imageid, fla
     return "[ "+ str(name) + " | " + str(port_ip) + " | " + str(global_ip) + "]"
 
 def main():
+    # Define some standard values, so they're not complicating things later
+    ubuntuServer = "ffa17298-537d-40b2-a848-0a4d22b49df5" # This is the image to use
+    p1_flavor = "1901" # This is the P-1 "flavor" code to use
+
+    # Define the prefix for the projects
+    projectPrefix = randomword(8)
+    
     ProjectAk5token = get_scoped_token(adminUser, adminPassword, contract, demoProjectAid, region).headers['X-Subject-Token']
     print "Project A Scoped Token - ", ProjectAk5token
 
@@ -153,16 +160,14 @@ def main():
     projectBcidr1 = "192.168.100.0/24"
     projectBcidr2 = "192.168.101.0/24"
 
-
-
     # create infrastructure for Project A and return the two interProject ports
     print "Starting build of Project A..."
-    projectA = create_k5_infra(ProjectAk5token, "ProjA", projectAcidr1, projectAcidr2 ,demoProjectAid, az2, extaz2, "ffa17298-537d-40b2-a848-0a4d22b49df5", "1901", "3" , 2)
+    projectA = create_k5_infra(ProjectAk5token, projectPrefix + "-ProjA", projectPrefix + "-ProjB", projectAcidr1, projectAcidr2 ,demoProjectAid, az2, extaz2, ubuntuServer, p1_flavor, "3", 2)
     print "\nCreated Project A Infrastructure", projectA
 
     print "\nStarting build of Project B..."
     # create infrastructure for Project B and return the two interProject ports
-    projectB = create_k5_infra(ProjectBk5token, "ProjB", projectBcidr1, projectBcidr2 ,demoProjectBid, az2, extaz2, "ffa17298-537d-40b2-a848-0a4d22b49df5", "1901", "3" , 2)
+    projectB = create_k5_infra(ProjectBk5token, projectPrefix + "-ProjB", projectPrefix + "-ProjA", projectBcidr1, projectBcidr2 ,demoProjectBid, az2, extaz2, ubuntuServer, p1_flavor, "3", 2)
     print "\nCreated Project B Infrastructure", projectB
 
     print "\nCreating InterProject Connection 1..."
